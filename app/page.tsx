@@ -14,12 +14,12 @@ const text = {
 };
 
 const dash = [
-  "         ",
-  "         ",
-  "█████╗   ",
-  "╚════╝   ",
-  "         ",
-  "         ",
+  "            ",
+  "            ",
+  "   █████╗   ",
+  "   ╚════╝   ",
+  "            ",
+  "            ",
 ];
 
 const nums = {
@@ -75,6 +75,14 @@ const TextDisplay = () => {
                 ))}
               </div>
             ))}
+        </div>
+
+        <div className="mt-4">
+          {dash.map((line, i) => (
+            <div key={i} style={{ color: "white" }}>
+              {line}
+            </div>
+          ))}
         </div>
 
         <div className="ml-4">
