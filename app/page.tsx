@@ -13,6 +13,50 @@ const text = {
   Space: ["  ", "  ", "  ", "  ", "  ", "  "],
 };
 
+const nums = {
+  0: [
+    " ██████╗ ",
+    "██╔═████╗",
+    "██║██╔██║",
+    "████╔╝██║",
+    "╚██████╔╝",
+    " ╚═════╝ ",
+  ],
+  1: [" ██╗", "███║", "╚██║", " ██║", " ██║", " ╚═╝"],
+  2: [
+    " ██████╗ ",
+    "██╔═══██╗",
+    "     ██╔╝",
+    "   ██╔╝  ",
+    "  ██╔╝   ",
+    "  ██████╗",
+  ],
+  3: [
+    " ██████╗ ",
+    "╚════██╗",
+    " █████╔╝",
+    " ╚═══██╗",
+    " ██████╔╝",
+    " ╚═════╝ ",
+  ],
+  4: [
+    "   ██╗██╗ ",
+    "  ███║██║ ",
+    " ██╔██║██║ ",
+    " ╚═╝██║╚═╝ ",
+    "    ██║   ",
+    "    ╚═╝   ",
+  ],
+  5: [
+    " ██████╗ ",
+    "██╔════╝ ",
+    "██████╗  ",
+    "╚════██╗ ",
+    "██████╔╝ ",
+    "╚═════╝  ",
+  ],
+};
+
 const TextDisplay = () => {
   const [turns, setTurns] = useState(0);
 
@@ -21,6 +65,7 @@ const TextDisplay = () => {
   };
 
   const word = ["F", "I", "R", "E", "Space", "E", "S", "C", "A", "P", "E"];
+  const turn_count = [1, 2, 3, 4, 5];
 
   return (
     <div className="font-mono whitespace-pre">
@@ -41,8 +86,34 @@ const TextDisplay = () => {
             ))}
           </div>
         ))}
-      <h1>{turns}</h1>
-      <button onClick={increaseTurns}>Increase</button>
+      {Array(6)
+        .fill(0)
+        .map((_, i) => (
+          <div key={i}>
+            {nums[turns + 1]?.map((line, j) => (
+              <span
+                key={j}
+                style={{
+                  color: "orange",
+                }}
+              >
+                {line[i]}
+                {j < nums[turns + 1].length - 1 && " "}
+              </span>
+            ))}
+          </div>
+        ))}
+      <button
+        onClick={
+          turns == 5
+            ? () => {
+                setTurns(0);
+              }
+            : increaseTurns
+        }
+      >
+        Increase
+      </button>
     </div>
   );
 };
