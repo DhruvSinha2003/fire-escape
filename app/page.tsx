@@ -13,6 +13,15 @@ const text = {
   Space: ["  ", "  ", "  ", "  ", "  ", "  "],
 };
 
+const dash = [
+  "         ",
+  "         ",
+  "█████╗   ",
+  "╚════╝   ",
+  "         ",
+  "         ",
+];
+
 const nums = {
   0: [
     " ██████╗ ",
@@ -22,39 +31,18 @@ const nums = {
     "╚██████╔╝",
     " ╚═════╝ ",
   ],
-  1: [" ██╗", "███║", "╚██║", " ██║", " ██║", " ╚═╝"],
-  2: [
-    " ██████╗ ",
-    "██╔═══██╗",
-    "     ██╔╝",
-    "   ██╔╝  ",
-    "  ██╔╝   ",
-    "  ██████╗",
+  1: [
+    " ██╗     ",
+    "███║     ",
+    "╚██║     ",
+    " ██║     ",
+    " ██║     ",
+    " ╚═╝     ",
   ],
-  3: [
-    " ██████╗ ",
-    "╚════██╗",
-    " █████╔╝",
-    " ╚═══██╗",
-    " ██████╔╝",
-    " ╚═════╝ ",
-  ],
-  4: [
-    "   ██╗██╗ ",
-    "  ███║██║ ",
-    " ██╔██║██║ ",
-    " ╚═╝██║╚═╝ ",
-    "    ██║   ",
-    "    ╚═╝   ",
-  ],
-  5: [
-    " ██████╗ ",
-    "██╔════╝ ",
-    "██████╗  ",
-    "╚════██╗ ",
-    "██████╔╝ ",
-    "╚═════╝  ",
-  ],
+  2: ["██████╗ ", "╚════██╗", " █████╔╝", "██╔═══╝ ", "███████╗", "╚══════╝"],
+  3: ["██████╗ ", "╚════██╗", " █████╔╝", "╚════██╗", "██████╔╝", "╚═════╝ "],
+  4: ["██╗  ██╗", "██║  ██║", "███████║", "╚════██║", "     ██║", "     ╚═╝"],
+  5: ["██████╗ ", "██╔═══╝ ", "██████╗ ", "╚════██╗", "██████╔╝", "╚═════╝ "],
 };
 
 const TextDisplay = () => {
@@ -65,54 +53,48 @@ const TextDisplay = () => {
   };
 
   const word = ["F", "I", "R", "E", "Space", "E", "S", "C", "A", "P", "E"];
-  const turn_count = [1, 2, 3, 4, 5];
 
   return (
     <div className="font-mono whitespace-pre">
-      {Array(6)
-        .fill(0)
-        .map((_, i) => (
-          <div key={i}>
-            {word.map((letter, j) => (
-              <span
-                key={j}
-                style={{
-                  color: j < turns * 2 + 1 ? "orange" : "white",
-                }}
-              >
-                {text[letter as keyof typeof text][i]}
-                {j < word.length - 1 && " "}
-              </span>
+      <div className="flex">
+        <div>
+          {Array(6)
+            .fill(0)
+            .map((_, i) => (
+              <div key={i}>
+                {word.map((letter, j) => (
+                  <span
+                    key={j}
+                    style={{
+                      color: j < turns * 2 + 1 ? "orange" : "white",
+                    }}
+                  >
+                    {text[letter as keyof typeof text][i]}
+                    {j < word.length - 1 && " "}
+                  </span>
+                ))}
+              </div>
             ))}
-          </div>
-        ))}
-      {Array(6)
-        .fill(0)
-        .map((_, i) => (
-          <div key={i}>
-            {nums[turns + 1]?.map((line, j) => (
-              <span
-                key={j}
-                style={{
-                  color: "orange",
-                }}
-              >
-                {line[i]}
-                {j < nums[turns + 1].length - 1 && " "}
-              </span>
+        </div>
+
+        <div className="ml-4">
+          {Array(6)
+            .fill(0)
+            .map((_, i) => (
+              <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
+                {nums[turns as keyof typeof nums][i]}
+              </div>
             ))}
-          </div>
-        ))}
+        </div>
+      </div>
+
+      <div className="mt-4 text-orange-500">Turn {turns} / 5</div>
+
       <button
-        onClick={
-          turns == 5
-            ? () => {
-                setTurns(0);
-              }
-            : increaseTurns
-        }
+        onClick={turns === 5 ? () => setTurns(0) : increaseTurns}
+        className="mt-2 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
       >
-        Increase
+        {turns === 5 ? "Reset" : "Increase"}
       </button>
     </div>
   );
