@@ -38,7 +38,7 @@ const FireEscapeGame = () => {
   async function getResult(userInput: string) {
     const context = `You are the game master in a tense survival scenario. The player is trapped in a burning house and must escape within 5 turns. Current turn: ${
       turns + 1
-    }/5. Remember all previous context and maintain consistency in the scenario.
+    }/5. Dont mention the turn in your response Remember all previous context and maintain consistency in the scenario.
 
 Game State:
 - Room Layout: A second-floor bedroom with a window, a door leading to the hallway, and various furniture
@@ -53,7 +53,7 @@ ${messages
 Player's action: ${userInput}
 
 Response Guidelines:
-1. Only use "try something else" if the action is completely impossible or suicidal. In these cases, you may also provide a hint and make sure that the phrase "try something else" is used
+1. Use "try something else" if the action is useless or completely impossible  or suicidal or goes against something already established as un doable. In these cases, you may also provide a hint and make sure that the phrase "try something else" is used
 2. For risky or reckless actions, let them proceed but describe negative consequences
 3. Keep descriptions vivid and tense (2-3 sentences)
 4. Use "congratulations" only if they successfully escape. you have to include the word "congratulations" in the response. if the user leaves the room say this.
@@ -170,15 +170,15 @@ Remember: Let players face consequences of poor choices rather than blocking the
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 bg-opacity-90 text-center text-sm text-gray-400">
-          {turns}/5 Turns Used
+        <div className=" bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 bg-opacity-90 text-center text-sm text-gray-400">
+          {!showTurnMessage ? `${turns}/5 Turns Used` : "Turn not used"}
         </div>
       </div>
 
       {hasWon ? (
         <div className="mt-4">
-          <div className="text-green-500 mb-2 text-center font-bold text-xl">
-            You Win!
+          <div className="text-green-500 mb-2 text-center font-bold text-2xl">
+            Congratulations! You Win!
           </div>
           <button
             onClick={resetGame}
