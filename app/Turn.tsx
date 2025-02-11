@@ -1,5 +1,4 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 
 const text = {
   F: ["███████╗", "██╔════╝", "█████╗  ", "██╔══╝  ", "██║     ", "╚═╝     "],
@@ -54,13 +53,11 @@ const nums = {
   5: ["██████╗ ", "██╔═══╝ ", "██████╗ ", "╚════██╗", "██████╔╝", "╚═════╝ "],
 };
 
-const Turn = () => {
-  const [turns, setTurns] = useState(0);
+interface TurnProps {
+  turns: number;
+}
 
-  const increaseTurns = () => {
-    setTurns((prevTurns) => (prevTurns < 5 ? prevTurns + 1 : prevTurns));
-  };
-
+const Turn: React.FC<TurnProps> = ({ turns }) => {
   const word = ["F", "I", "R", "E", "Space", "E", "S", "C", "A", "P", "E"];
 
   return (
@@ -125,13 +122,6 @@ const Turn = () => {
           ))}
         </div>
       </div>
-
-      <button
-        onClick={turns === 5 ? () => setTurns(0) : increaseTurns}
-        className="mt-2 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
-      >
-        {turns === 5 ? "Reset" : "Increase"}
-      </button>
     </div>
   );
 };

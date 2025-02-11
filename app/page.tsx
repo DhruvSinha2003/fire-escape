@@ -2,10 +2,10 @@
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import Turn from "./Turn"; // Your existing ASCII art component
+import Turn from "./Turn";
 
 const FireEscapeGame = () => {
-  const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY; // Make sure to set this in your .env.local
+  const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
     {
@@ -107,7 +107,7 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <Turn />
+      <Turn turns={turns} />
 
       <div className="mt-4 bg-gray-800 p-4 rounded max-h-96 overflow-y-auto">
         {messages.map((message, index) => (
