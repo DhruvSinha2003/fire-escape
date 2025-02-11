@@ -10,8 +10,19 @@ const FireEscapeGame = () => {
   const [messages, setMessages] = useState([
     {
       type: "bot",
-      content:
-        "You wake up to the smell of smoke. The room is getting hot and dark. You need to escape within 5 turns. What do you do?",
+      content: `You wake up gasping for air in a smoke-filled bedroom. Flames dance at the edges of your vision. Through the haze, you see:
+
+• A window with flames licking at the curtains
+• A door blocked by a fallen bookshelf
+• A weakened floor that groans beneath you
+• An ornate safe with a numerical keypad
+• A mysterious letter pinned to the wall, its edges curling in the heat
+• A thick blanket on a nearby chair
+• An open attic hatch above, though fire creeps upward
+• A collapsible ladder under the bed, tangled in chains
+• A child's half-burned drawing that looks suspiciously like blueprints
+
+The smoke is thickening. Each choice matters. What's your first move?`,
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -36,31 +47,51 @@ const FireEscapeGame = () => {
   };
 
   async function getResult(userInput: string) {
-    const context = `You are the game master in a tense survival scenario. The player is trapped in a burning house and must escape within 5 turns. Current turn: ${
+    const context = `You are the game master in a deadly escape scenario. The player is trapped in a burning bedroom and must escape within 5 turns or perish. Current turn: ${
       turns + 1
-    }/5. Dont mention the turn in your response Remember all previous context and maintain consistency in the scenario.
+    }/5.
 
 Game State:
-- Room Layout: A second-floor bedroom with a window, a door leading to the hallway, and various furniture
-- Fire Status: The fire is spreading, making the situation increasingly dangerous
-- Player Status: The player starts in the bedroom and must escape the house
-- Current Turn: ${turns + 1} out of 5
-- Previous Events: 
+- Location: Second-floor bedroom rapidly filling with smoke
+- Hazards: Active fire, structural damage, toxic smoke, height (second floor)
+- Key Items: Window (with flames), blocked door, floor (weakening), safe (locked), letter, blanket, attic hatch, ladder (chained), child's drawing shows a secret way out of the room hidden behind the safe. safe can be moved using the ladder and chain somehow.
+- Player Status: Conscious but in danger
+- Prior Events:
 ${messages
-  .map((m) => (m.type === "bot" ? "AI: " + m.content : "Player: " + m.content))
+  .map((m) =>
+    m.type === "bot" ? "Scene: " + m.content : "Action: " + m.content
+  )
   .join("\n")}
 
 Player's action: ${userInput}
 
 Response Guidelines:
-1. Use "try something else" if the action is useless or completely impossible  or suicidal or goes against something already established as un doable. In these cases, you may also provide a hint and make sure that the phrase "try something else" is used
-2. For risky or reckless actions, let them proceed but describe negative consequences
-3. Keep descriptions vivid and tense (2-3 sentences)
-4. Use "congratulations" only if they successfully escape. you have to include the word "congratulations" in the response. if the user leaves the room say this.
+1. For impossible/suicidal actions: Use phrase "try something else" and provide a subtle hint
+2. For risky actions: Allow but describe realistic consequences (smoke inhalation, burns, etc.)
+3. Keep responses vivid but concise (2-3 sentences maximum)
+4. Use "Congratulations" only when player successfully escapes
 5. Maintain consistency with previous events and room layout
-6. Consider smoke, heat, and fire spread in responses
+6. Consider:
+   - Smoke is getting thicker
+   - Heat is intensifying
+   - Structure is weakening
+   - Time pressure is mounting
+   - Items can be combined or used creatively
+7. Reward creative thinking and clever solutions
+8. Jumping straight to the solution is discouraged
 
-Remember: Let players face consequences of poor choices rather than blocking them with "try something else". Only prevent absolutely impossible actions.`;
+Key Rules:
+- Let players face consequences rather than blocking actions
+- Only use "try something else" for truly impossible actions
+- Each turn should increase tension
+- Items can have multiple uses
+- Reward clever thinking
+- Stay consistent with established facts
+
+Response Format:
+- Describe immediate result of action
+- Add sensory details
+- Hint at mounting danger`;
 
     try {
       return await axios({
@@ -119,8 +150,19 @@ Remember: Let players face consequences of poor choices rather than blocking the
     setMessages([
       {
         type: "bot",
-        content:
-          "You wake up to the smell of smoke. The room is getting hot and dark. You need to escape within 5 turns. What do you do?",
+        content: `You wake up gasping for air in a smoke-filled bedroom. Flames dance at the edges of your vision. Through the haze, you see:
+
+• A window with flames licking at the curtains
+• A door blocked by a fallen bookshelf
+• A weakened floor that groans beneath you
+• An ornate safe with a numerical keypad
+• A mysterious letter pinned to the wall, its edges curling in the heat
+• A thick blanket on a nearby chair
+• An open attic hatch above, though fire creeps upward
+• A collapsible ladder under the bed, tangled in chains
+• A child's half-burned drawing that looks suspiciously like a map
+
+The smoke is thickening. Each choice matters. What's your first move?`,
       },
     ]);
     setInput("");
@@ -133,7 +175,7 @@ Remember: Let players face consequences of poor choices rather than blocking the
       {showTurnMessage && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-gray-800 text-gray-300 px-6 py-3 rounded-lg shadow-lg">
-            Turn not consumed - Try a different approach
+            That won&apos;t work - Try a different approach
           </div>
         </div>
       )}
@@ -170,15 +212,15 @@ Remember: Let players face consequences of poor choices rather than blocking the
           <div ref={messagesEndRef} />
         </div>
 
-        <div className=" bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 bg-opacity-90 text-center text-sm text-gray-400">
-          {!showTurnMessage ? `${turns}/5 Turns Used` : "Turn not used"}
+        <div className="bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 bg-opacity-90 text-center text-sm text-gray-400">
+          {!showTurnMessage ? `${turns}/5 Turns Used` : "Try something else"}
         </div>
       </div>
 
       {hasWon ? (
         <div className="mt-4">
           <div className="text-green-500 mb-2 text-center font-bold text-2xl">
-            Congratulations! You Win!
+            You&apos;ve Escaped! You&apos;re Safe!
           </div>
           <button
             onClick={resetGame}
@@ -207,12 +249,14 @@ Remember: Let players face consequences of poor choices rather than blocking the
         </form>
       ) : (
         <div className="mt-4">
-          <div className="text-red-500 mb-2">Game Over - Out of turns!</div>
+          <div className="text-red-500 mb-2 text-center font-bold text-xl">
+            The fire claims another victim...
+          </div>
           <button
             onClick={resetGame}
             className="w-full p-2 bg-orange-500 text-white rounded hover:bg-orange-600"
           >
-            Play Again
+            Try Again
           </button>
         </div>
       )}
