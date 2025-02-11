@@ -22,6 +22,15 @@ const dash = [
   "            ",
 ];
 
+const slash = [
+  "        ██╗   ",
+  "       ██╔╝   ",
+  "      ██╔╝    ",
+  "     ██╔╝     ",
+  "    ██╔╝      ",
+  "   ╚═╝        ",
+];
+
 const nums = {
   0: [
     " ██████╗ ",
@@ -66,7 +75,12 @@ const TextDisplay = () => {
                   <span
                     key={j}
                     style={{
-                      color: j < turns * 2 + 1 ? "orange" : "white",
+                      color:
+                        turns === 5
+                          ? "red"
+                          : j < turns * 2 + 1
+                          ? "orange"
+                          : "white",
                     }}
                   >
                     {text[letter as keyof typeof text][i]}
@@ -77,9 +91,9 @@ const TextDisplay = () => {
             ))}
         </div>
 
-        <div className="mt-4">
+        <div>
           {dash.map((line, i) => (
-            <div key={i} style={{ color: "white" }}>
+            <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
               {line}
             </div>
           ))}
@@ -94,9 +108,23 @@ const TextDisplay = () => {
               </div>
             ))}
         </div>
-      </div>
 
-      <div className="mt-4 text-orange-500">Turn {turns} / 5</div>
+        <div>
+          {slash.map((line, i) => (
+            <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
+              {line}
+            </div>
+          ))}
+        </div>
+
+        <div>
+          {nums[5].map((line, i) => (
+            <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
+              {line}
+            </div>
+          ))}
+        </div>
+      </div>
 
       <button
         onClick={turns === 5 ? () => setTurns(0) : increaseTurns}
