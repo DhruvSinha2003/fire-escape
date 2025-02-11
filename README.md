@@ -1,5 +1,5 @@
 
-https://github.com/user-attachments/assets/af83ae49-8cfd-4cdc-9c1e-4f702972abb1
+https://github.com/user-attachments/assets/93048fff-8bfd-4459-b9d7-46efaa90c22e
 
 A text-based survival game where you must escape a burning house  
 
