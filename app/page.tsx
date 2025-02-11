@@ -20,7 +20,7 @@ const FireEscapeGame = () => {
 • A thick blanket on a nearby chair
 • An open attic hatch above, though fire creeps upward
 • A collapsible ladder under the bed, tangled in chains
-• A child's half-burned drawing that looks suspiciously like blueprints
+• A child's half-burned drawing that looks suspiciously like a map
 
 The smoke is thickening. Each choice matters. What's your first move?`,
     },
