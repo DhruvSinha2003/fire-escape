@@ -1,5 +1,5 @@
-![Untitled video - Made with Clipchamp](https://github.com/user-attachments/assets/e52b0198-e892-4145-a7ff-efc877f42ce8)
 
+https://github.com/user-attachments/assets/388abec9-7c5c-45b1-8c6a-146e9d22e7ca
 
 A text-based survival game where you must escape a burning house  
 
