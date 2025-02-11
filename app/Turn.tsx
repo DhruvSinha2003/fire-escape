@@ -55,10 +55,17 @@ const nums = {
 
 interface TurnProps {
   turns: number;
+  hasWon: boolean;
 }
 
-const Turn: React.FC<TurnProps> = ({ turns }) => {
+const Turn: React.FC<TurnProps> = ({ turns, hasWon }) => {
   const word = ["F", "I", "R", "E", "Space", "E", "S", "C", "A", "P", "E"];
+
+  const getColor = () => {
+    if (hasWon) return "rgb(34, 197, 94)"; // text-green-500
+    if (turns === 5) return "red";
+    return "white";
+  };
 
   return (
     <div className="font-mono whitespace-pre">
@@ -72,12 +79,13 @@ const Turn: React.FC<TurnProps> = ({ turns }) => {
                   <span
                     key={j}
                     style={{
-                      color:
-                        turns === 5
-                          ? "red"
-                          : j < turns * 2 + 1
-                          ? "orange"
-                          : "white",
+                      color: hasWon
+                        ? "rgb(34, 197, 94)"
+                        : turns === 5
+                        ? "red"
+                        : j < turns * 2 + 1
+                        ? "orange"
+                        : "white",
                     }}
                   >
                     {text[letter as keyof typeof text][i]}
@@ -90,7 +98,7 @@ const Turn: React.FC<TurnProps> = ({ turns }) => {
 
         <div>
           {dash.map((line, i) => (
-            <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
+            <div key={i} style={{ color: getColor() }}>
               {line}
             </div>
           ))}
@@ -100,7 +108,7 @@ const Turn: React.FC<TurnProps> = ({ turns }) => {
           {Array(6)
             .fill(0)
             .map((_, i) => (
-              <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
+              <div key={i} style={{ color: getColor() }}>
                 {nums[turns as keyof typeof nums][i]}
               </div>
             ))}
@@ -108,7 +116,7 @@ const Turn: React.FC<TurnProps> = ({ turns }) => {
 
         <div>
           {slash.map((line, i) => (
-            <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
+            <div key={i} style={{ color: getColor() }}>
               {line}
             </div>
           ))}
@@ -116,7 +124,7 @@ const Turn: React.FC<TurnProps> = ({ turns }) => {
 
         <div>
           {nums[5].map((line, i) => (
-            <div key={i} style={{ color: turns === 5 ? "red" : "white" }}>
+            <div key={i} style={{ color: getColor() }}>
               {line}
             </div>
           ))}

@@ -16,7 +16,8 @@ const FireEscapeGame = () => {
   ]);
   const [loading, setLoading] = useState(false);
   const [turns, setTurns] = useState(0);
-  const messagesEndRef = useRef(null);
+  const [hasWon, setHasWon] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,13 +40,11 @@ const FireEscapeGame = () => {
     }/5.
 
 Previous events:
-${messages
-  .map((m) => (m.type === "bot" ? "AI: " + m.content : "Player: " + m.content))
-  .join("\n")}
+${messages.map((m) => (m.type === "bot" ? m.content : m.content)).join("\n")}
 
 Player's action: ${userInput}
 
-Respond with a short, vivid description of what happens (2-3 sentences). Keep the tension high. If the action is impossible or would result in immediate death, explain why and let them try something else without advancing the turn. If they successfully escape, congratulate them and end the game.`;
+Respond with a short, vivid description of what happens (2-3 sentences). Keep the tension high. If the action is impossible or would result in immediate death, explain why and let them try something else without advancing the turn include the phrase try something else. If they successfully escape, congratulate them and end the game. for the game end you have to use the phrase congratulations`;
 
     try {
       return await axios({
@@ -64,7 +63,7 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!input.trim() || loading || turns >= 5) return;
+    if (!input.trim() || loading || (turns >= 5 && !hasWon)) return;
 
     const userMessage = input;
     setInput("");
@@ -76,8 +75,9 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
       const response = result.data.candidates[0].content.parts[0].text;
       setMessages((prev) => [...prev, { type: "bot", content: response }]);
 
-      // Only increment turn if it wasn't an "impossible action" response
-      if (!response.toLowerCase().includes("try something else")) {
+      if (response.toLowerCase().includes("congratulations")) {
+        setHasWon(true);
+      } else if (!response.toLowerCase().includes("try something else")) {
         setTurns((prev) => prev + 1);
       }
     } catch (error) {
@@ -95,6 +95,7 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
 
   const resetGame = () => {
     setTurns(0);
+    setHasWon(false);
     setMessages([
       {
         type: "bot",
@@ -107,7 +108,7 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <Turn turns={turns} />
+      <Turn turns={turns} hasWon={hasWon} />
 
       <div className="mt-4 bg-gray-800 p-4 rounded max-h-96 overflow-y-auto">
         {messages.map((message, index) => (
@@ -134,7 +135,19 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
         <div ref={messagesEndRef} />
       </div>
 
-      {turns < 5 ? (
+      {hasWon ? (
+        <div className="mt-4">
+          <div className="text-green-500 mb-2 text-center font-bold text-xl">
+            You Win!
+          </div>
+          <button
+            onClick={resetGame}
+            className="w-full p-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Play Again
+          </button>
+        </div>
+      ) : turns < 5 ? (
         <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
           <textarea
             value={input}
