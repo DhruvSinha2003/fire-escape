@@ -17,6 +17,7 @@ const FireEscapeGame = () => {
   const [loading, setLoading] = useState(false);
   const [turns, setTurns] = useState(0);
   const [hasWon, setHasWon] = useState(false);
+  const [showTurnMessage, setShowTurnMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -37,14 +38,29 @@ const FireEscapeGame = () => {
   async function getResult(userInput: string) {
     const context = `You are the game master in a tense survival scenario. The player is trapped in a burning house and must escape within 5 turns. Current turn: ${
       turns + 1
-    }/5.
+    }/5. Remember all previous context and maintain consistency in the scenario.
 
-Previous events:
-${messages.map((m) => (m.type === "bot" ? m.content : m.content)).join("\n")}
+Game State:
+- Room Layout: A second-floor bedroom with a window, a door leading to the hallway, and various furniture
+- Fire Status: The fire is spreading, making the situation increasingly dangerous
+- Player Status: The player starts in the bedroom and must escape the house
+- Current Turn: ${turns + 1} out of 5
+- Previous Events: 
+${messages
+  .map((m) => (m.type === "bot" ? "AI: " + m.content : "Player: " + m.content))
+  .join("\n")}
 
 Player's action: ${userInput}
 
-Respond with a short, vivid description of what happens (2-3 sentences). Keep the tension high. If the action is impossible or would result in immediate death, explain why and let them try something else without advancing the turn include the phrase try something else. If they successfully escape, congratulate them and end the game. for the game end you have to use the phrase congratulations`;
+Response Guidelines:
+1. Only use "try something else" if the action is completely impossible or suicidal. In these cases, you may also provide a hint and make sure that the phrase "try something else" is used
+2. For risky or reckless actions, let them proceed but describe negative consequences
+3. Keep descriptions vivid and tense (2-3 sentences)
+4. Use "congratulations" only if they successfully escape. you have to include the word "congratulations" in the response. if the user leaves the room say this.
+5. Maintain consistency with previous events and room layout
+6. Consider smoke, heat, and fire spread in responses
+
+Remember: Let players face consequences of poor choices rather than blocking them with "try something else". Only prevent absolutely impossible actions.`;
 
     try {
       return await axios({
@@ -79,6 +95,9 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
         setHasWon(true);
       } else if (!response.toLowerCase().includes("try something else")) {
         setTurns((prev) => prev + 1);
+      } else {
+        setShowTurnMessage(true);
+        setTimeout(() => setShowTurnMessage(false), 2000);
       }
     } catch (error) {
       console.error(error);
@@ -96,6 +115,7 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
   const resetGame = () => {
     setTurns(0);
     setHasWon(false);
+    setShowTurnMessage(false);
     setMessages([
       {
         type: "bot",
@@ -110,29 +130,49 @@ Respond with a short, vivid description of what happens (2-3 sentences). Keep th
     <div className="max-w-4xl mx-auto p-4">
       <Turn turns={turns} hasWon={hasWon} />
 
-      <div className="mt-4 bg-gray-800 p-4 rounded max-h-96 overflow-y-auto">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-2 ${
-              message.type === "user"
-                ? "text-green-400 text-right"
-                : message.type === "error"
-                ? "text-red-400"
-                : "text-white"
-            }`}
-          >
-            <pre className="whitespace-pre-wrap font-sans">
-              {message.content}
-            </pre>
+      {showTurnMessage && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-gray-800 text-gray-300 px-6 py-3 rounded-lg shadow-lg">
+            Turn not consumed - Try a different approach
           </div>
-        ))}
-        {loading && (
-          <div className="flex justify-start">
-            <Loader2 className="animate-spin h-5 w-5 text-white" />
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+        </div>
+      )}
+
+      <div className="mt-4 relative">
+        <div
+          className="bg-gray-800 p-4 rounded max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "#4B5563 #1F2937",
+          }}
+        >
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`mb-2 ${
+                message.type === "user"
+                  ? "text-green-400 text-right"
+                  : message.type === "error"
+                  ? "text-red-400"
+                  : "text-white"
+              }`}
+            >
+              <pre className="whitespace-pre-wrap font-sans">
+                {message.content}
+              </pre>
+            </div>
+          ))}
+          {loading && (
+            <div className="flex justify-start">
+              <Loader2 className="animate-spin h-5 w-5 text-white" />
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 bg-opacity-90 text-center text-sm text-gray-400">
+          {turns}/5 Turns Used
+        </div>
       </div>
 
       {hasWon ? (
