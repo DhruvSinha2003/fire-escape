@@ -1,5 +1,5 @@
 
-https://github.com/user-attachments/assets/93048fff-8bfd-4459-b9d7-46efaa90c22e
+![FireEscape](https://github.com/user-attachments/assets/cc2b71e7-51c5-4b8b-9b95-525901929d38)
 
 A text-based survival game where you must escape a burning house  
 
